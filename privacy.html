@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Privacy Policy | Vortexia</title>
+    <meta name="title" content="Privacy Policy — Vortexia">
+    <meta name="description" content="Vortexia Privacy Policy — Learn how we collect, use, and protect your data. Full disclosure on log files, cookies, third-party links, and your consent rights.">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://vortexia.site/privacy.html">
+    <meta property="og:title" content="Privacy Policy | Vortexia">
+    <meta property="og:description" content="Vortexia Privacy Policy — Learn how we collect, use, and protect your data. Full disclosure on log files, cookies, third-party links, and your consent rights.">
+    <meta property="og:image" content="https://vortexia.site/vortexia_16x9_hq.webp">
+    
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://vortexia.site/privacy.html">
+    <meta property="twitter:title" content="Privacy Policy | Vortexia">
+    <meta property="twitter:description" content="Vortexia Privacy Policy — Learn how we collect, use, and protect your data. Full disclosure on log files, cookies, third-party links, and your consent rights.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <script src="header.js" defer></script>
+
+    <style>
+        /* ==========================================================================
+           GLOBAL DESIGN SYSTEM (consistent with Vortexia)
+           Only essential core variables & content styles — no duplicate header/footer styles
+           ========================================================================== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-base:      #07090F;
+            --bg-raised:    #0C1018;
+            --bg-card:      #101520;
+            --bg-card-hover:#141C2C;
+            --border:       #1C2438;
+            --text-1:       #EEF3FF;
+            --text-2:       #8E9AB0;
+            --text-3:       #5A6478;
+            --blue:         #4F9EF8;
+            --blue-dk:      #2563EB;
+            --gold:         #F5C542;
+            --emerald:      #22C991;
+            --radius-card:  20px;
+            --radius-pill:  999px;
+            --sh-blue:      0 8px 32px -8px rgba(79,158,248,0.25);
+        }
+
+        body {
+            background: var(--bg-base);
+            color: var(--text-2);
+            font-family: 'Manrope', sans-serif;
+            font-size: 16px;
+            line-height: 1.65;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 28px 28px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* preserve space for dynamic header to avoid layout shift (fixed height = header height) */
+        #dynamic-header {
+            min-height: 72px;
+            display: block;
+            position: relative;
+            z-index: 200;
+        }
+
+        /* preserve footer space (flexible min-height) */
+        #dynamic-footer {
+            display: block;
+            width: 100%;
+        }
+
+        /* ==========================================================================
+           MAIN ARTICLE CONTENT (Privacy policy specific)
+           ========================================================================== */
+        .article-wrapper {
+            max-width: 840px;
+            margin: 64px auto 100px;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .article-category {
+            color: var(--blue);
+            font-weight: 800;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .article-h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.4rem, 5vw, 3.6rem);
+            color: var(--text-1);
+            line-height: 1.15;
+            margin-bottom: 24px;
+        }
+
+        .article-h1 u {
+            text-decoration: none;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 3px;
+        }
+
+        .article-h1 u::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #EEF3FF;
+            border-radius: 3px;
+            transform-origin: left;
+            transition: transform 0.2s ease;
+        }
+
+        .article-h1:hover u::after {
+            transform: scaleX(1.02);
+            background: var(--blue);
+        }
+
+        .article-content {
+            font-size: 1.12rem;
+            line-height: 1.8;
+            color: #B4C0D3;
+        }
+
+        .article-content p {
+            margin-bottom: 24px;
+        }
+
+        .article-content h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem;
+            color: var(--text-1);
+            margin: 48px 0 20px;
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+        }
+
+        .article-content h3 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 1.4rem;
+            color: var(--text-1);
+            font-weight: 800;
+            margin: 32px 0 16px;
+        }
+
+        .article-content strong {
+            color: var(--text-1);
+            font-weight: 700;
+        }
+
+        .article-content ul {
+            margin: 0 0 24px 24px;
+        }
+
+        .article-content li {
+            margin-bottom: 12px;
+        }
+
+        .article-content li::marker {
+            color: var(--blue);
+        }
+
+        .article-content hr {
+            margin: 40px 0;
+            border-color: var(--border);
+            opacity: 0.4;
+        }
+
+        .info-note {
+            background: rgba(79,158,248,0.05);
+            border-left: 3px solid var(--blue);
+            padding: 20px 28px;
+            border-radius: 12px;
+            margin: 32px 0;
+            font-size: 0.98rem;
+        }
+
+        @media (max-width: 768px) {
+            .article-wrapper {
+                padding: 0 20px;
+                margin-top: 40px;
+            }
+            .article-h1 {
+                font-size: 2rem;
+            }
+            .article-content h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========================  HEADER PLACEHOLDER (loaded from header.html) ======================== -->
+    <div id="header-content"></div>
+
+    <!-- ======================== MAIN CONTENT (Privacy policy) ======================== -->
+    <main class="article-wrapper">
+        <header class="article-header">
+            <span class="article-category">Legal & Transparency</span>
+            <h1 class="article-h1">Privacy Policy</h1>
+        </header>
+
+        <article class="article-content">
+            <p>At <strong>Vortexia</strong> (accessible from <strong>https://vortexia.site</strong>), one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Vortexia and how we use it.</p>
+            
+            <p>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us. This policy applies only to our online activities and is valid for visitors to our website with regards to the information that they shared and/or collect on Vortexia.</p>
+
+            <h2>1. Log Files</h2>
+            <p>Vortexia follows a standard procedure of using log files. These files log visitors when they visit websites. All hosting companies do this as part of analytics. The information collected by log files includes internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any personally identifiable information. The purpose of the information is for analyzing trends, administering the site, tracking users' movement on the website, and gathering demographic information.</p>
+
+            <h2>2. Cookies and Web Beacons</h2>
+            <p>Like any other modern website, Vortexia uses 'cookies'. These cookies are used to store information including visitors' preferences, and the pages on the website that the visitor accessed or visited. The data is used to optimize the users' experience by customizing our web page content based on visitors' browser type and/or other information.</p>
+            
+            <p>You can choose to disable cookies through your individual browser options. However, please note that disabling cookies may affect the functionality of certain parts of our website. For more detailed information about cookie management with specific web browsers, you can refer to the browsers' respective websites.</p>
+
+            <div class="info-note">
+                <i class="fas fa-shield-alt" style="color: var(--blue); margin-right: 12px;"></i> 
+                <strong>Your choice matters:</strong> Vortexia never uses intrusive tracking. Cookies help us understand which guides and benchmarks are most helpful to our community.
+            </div>
+
+            <h2>3. Third-Party Privacy Policies</h2>
+            <p>Vortexia's Privacy Policy does not apply to other advertisers or third-party websites (such as Wix, Hostinger, Cloudflare, or any affiliate partner platforms that we may reference). Thus, we are advising you to consult the respective Privacy Policies of these third-party servers for more detailed information. It may include their practices and instructions about how to opt-out of certain options.</p>
+            
+            <p>We include links to third-party tools and hosting providers for your convenience. Once you leave our website, any information you provide to those third parties is governed by their own privacy policies. Vortexia has no control over, and assumes no responsibility for, the content, privacy policies, or practices of any third-party sites.</p>
+
+            <h2>4. Consent</h2>
+            <p>By using our website, you hereby consent to our Privacy Policy and agree to its terms. If you do not agree with any part of this policy, please do not use Vortexia. Continued use of the site implies acceptance of any future amendments to this policy.</p>
+
+            <h2>5. Information We Collect Directly (Optional)</h2>
+            <p>Vortexia may ask you to provide certain personally identifiable information when you subscribe to our newsletter, leave a comment, or fill out a contact form. This information may include your name and email address. We use this information solely to respond to your inquiries, send occasional updates about hosting intelligence, and improve our content. You can opt out of any promotional emails at any time via the “unsubscribe” link.</p>
+            
+            <h2>6. Children's Information</h2>
+            <p>Protecting children's privacy is especially important. Vortexia does not knowingly collect any Personal Identifiable Information from children under the age of 13. If you think that your child provided this kind of information on our website, we strongly encourage you to contact us immediately and we will do our best efforts to promptly remove such information from our records.</p>
+
+            <h2>7. Data Security & Retention</h2>
+            <p>We implement reasonable security measures to protect against unauthorized access, alteration, or disclosure of your personal information. However, no method of transmission over the internet is 100% secure. Vortexia retains log data for a limited period (typically up to 90 days) for analytical purposes, after which it is anonymized or deleted.</p>
+
+            <h2>8. Changes to This Privacy Policy</h2>
+            <p>Vortexia reserves the right to update or change our Privacy Policy at any time. You should check this page periodically for changes. Your continued use of the website after we post any modifications to the Privacy Policy will constitute your acknowledgment of the modifications and your consent to abide and be bound by the modified Privacy Policy.</p>
+            
+            <hr />
+                    
+            <div class="info-note" style="background: rgba(34,201,145,0.03); border-left-color: var(--emerald);">
+                <center>
+                    <i class="fas fa-gavel" style="font-size: 2rem; color: var(--emerald); margin-bottom: 12px; display: inline-block;"></i>
+                </center>
+                <strong>Vortexia</strong> — This document is effective as of May 20, 2026 and supersedes any previous privacy policies published by Vortexia.
+            </div>
+        </article>
+    </main>
+
+    <!-- ========================  FOOTER PLACEHOLDER (loaded from footer.html) ======================== -->
+    <div id="footer-content"></div>
+
+<script>
+        // Header එක සම්බන්ධ කිරීම
+        fetch('header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-content').innerHTML = data;
+            });
+
+        // Footer එක සම්බන්ධ කිරීම
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-content').innerHTML = data;
+            });
+    </script>
+</body>
+</html>

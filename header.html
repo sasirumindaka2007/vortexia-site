@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vortexia Optimized Header</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="header.js" defer></script>
+    
+    <style>
+        /* ==========================================================================
+           VORTEXIA UNIVERSAL HEADER STYLES
+           (Prefix 'vx-' is used to prevent conflicts with other files)
+           ========================================================================== */
+        
+        :root {
+            /* Scoped Variables */
+            --vx-bg-header: rgba(7, 9, 15, 0.88);
+            --vx-bg-mobile: rgba(12, 16, 24, 0.98);
+            --vx-border: #1C2438;
+            --vx-text-1: #EEF3FF;
+            --vx-text-2: #8E9AB0;
+            --vx-blue: #4F9EF8;
+            --vx-blue-hover: rgba(79, 158, 248, 0.1);
+            --vx-font: 'Manrope', sans-serif;
+        }
+
+        /* Reset only for header elements to ensure universal compatibility */
+        .vx-header, .vx-header * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .vx-header {
+            position: sticky;
+            top: 0;
+            z-index: 9999; /* High Z-index to stay on top of any page content */
+            background: var(--vx-bg-header);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px); /* Safari support */
+            border-bottom: 1px solid var(--vx-border);
+            font-family: var(--vx-font);
+        }
+
+        .vx-container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .vx-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 72px;
+        }
+
+        .vx-logo {
+            font-weight: 800;
+            font-size: 1.35rem;
+            color: var(--vx-text-1);
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .vx-nav-menu {
+            display: flex;
+            gap: 8px;
+        }
+
+        .vx-nav-link {
+            color: var(--vx-text-2);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: color 0.3s ease, background 0.3s ease;
+        }
+
+        .vx-nav-link:hover {
+            color: var(--vx-text-1);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .vx-nav-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--vx-text-1);
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            transition: color 0.3s ease, background 0.3s ease;
+        }
+
+        .vx-nav-toggle:hover {
+            color: var(--vx-blue);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .vx-toggle-icon {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Responsive Mobile Styles */
+        @media (max-width: 768px) {
+            .vx-nav-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .vx-nav-menu {
+                position: absolute;
+                top: 72px;
+                left: 0;
+                width: 100%;
+                flex-direction: column;
+                background: var(--vx-bg-mobile);
+                backdrop-filter: blur(24px);
+                -webkit-backdrop-filter: blur(24px);
+                border-bottom: 1px solid var(--vx-border);
+                padding: 20px 24px;
+                gap: 12px;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+                
+                /* Animation Initial State */
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(-20px);
+                transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            /* Active State triggers the smooth drop-down */
+            .vx-nav-menu.is-active {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0);
+            }
+
+            .vx-nav-link {
+                width: 100%;
+                padding: 14px 16px;
+                background: rgba(255, 255, 255, 0.03);
+                border-radius: 10px;
+            }
+
+            .vx-nav-link:hover {
+                background: var(--vx-blue-hover);
+                color: var(--vx-blue);
+            }
+
+            /* Icon rotation handled safely via CSS */
+            .vx-nav-toggle.is-active .vx-toggle-icon {
+                transform: rotate(180deg); 
+            }
+        }
+    </style>
+</head>
+<body style="background: #07090F; height: 200vh;"> <header class="vx-header">
+        <nav class="vx-nav vx-container">
+            <a href="https://vortexia.site" class="vx-logo">VORTEXIA</a>
+            
+            <div class="vx-nav-menu" id="vxNavMenu">
+                <a href="https://vortexia.site" class="vx-nav-link">Home</a>
+                <a href="content.html" class="vx-nav-link">Content</a>
+            </div>
+
+            <button class="vx-nav-toggle" id="vxNavToggle" aria-label="Toggle Navigation">
+                <i class="fas fa-bars vx-toggle-icon" id="vxToggleIcon"></i>
+            </button>
+        </nav>
+    </header>
+</body>
+</html>

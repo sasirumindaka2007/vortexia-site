@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    
+    <title>5 Common Responsive Web Design Mistakes + Fixes | Vortexia</title>
+    <meta name="description" content="Stop guessing why your layouts break on mobile. Learn 5 responsive design mistakes with before/after code examples — modern CSS Grid, fluid units, and viewport fixes.">
+    
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://vortexia.site/responsive-mistakes-guide.html">
+    <meta property="og:title" content="5 Common Responsive Web Design Mistakes and How to Fix Them">
+    <meta property="og:description" content="Concrete before/after CSS examples. Fix hardcoded px, missing viewport, rigid media queries, fixed width containers, and overflowing images.">
+    <meta property="og:image" content="https://vortexia.site/responsive-og.jpg">
+    <meta property="twitter:card" content="summary_large_image">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <script src="header.js" defer></script>
+    
+    <style>
+        /* ==========================================================================
+           CORE VARIABLES (PixelForge / Vortexia Design) — exact same as portfolio page
+           ========================================================================== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-base:      #07090F;
+            --bg-raised:    #0C1018;
+            --bg-card:      #101520;
+            --bg-card-hover:#141C2C;
+            --border:       #1C2438;
+            --text-1:       #EEF3FF;
+            --text-2:       #8E9AB0;
+            --text-3:       #5A6478;
+            --blue:         #4F9EF8;
+            --blue-dk:      #2563EB;
+            --gold:         #F5C542;
+            --emerald:      #22C991;
+            --radius-card:  20px;
+            --radius-pill:  999px;
+            --sh-blue:      0 8px 32px -8px rgba(79,158,248,0.25);
+        }
+
+        body {
+            background: var(--bg-base);
+            color: var(--text-2);
+            font-family: 'Manrope', sans-serif;
+            font-size: 16px;
+            line-height: 1.65;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: ''; position: fixed; inset: 0;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 28px 28px; pointer-events: none; z-index: 0;
+        }
+        .article-wrapper {
+            max-width: 840px;
+            margin: 64px auto 100px;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+    .featured-image { width: 100%; height: auto;
+     border-radius: var(--radius-card);
+      margin-bottom: 48px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+       border: 1px solid var(--border);
+    
+    }
+
+        .featured-icon-group i {
+            font-size: 3.2rem;
+            color: var(--blue);
+            transition: transform 0.2s;
+        }
+        .featured-icon-group .fa-arrow-right { color: var(--gold); font-size: 2rem; }
+        .featured-icon-group .fa-laptop-code { color: var(--emerald); }
+
+        .article-header { text-align: center; margin-bottom: 48px; }
+        .article-category { color: var(--blue); font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; display: block; }
+        .article-h1 { font-family: 'DM Serif Display', serif; font-size: clamp(2.4rem, 5vw, 3.6rem); color: var(--text-1); line-height: 1.15; margin-bottom: 24px; }
+        
+        .article-meta { display: flex; align-items: center; justify-content: center; gap: 16px; color: var(--text-3); font-size: 0.9rem; font-weight: 500; }
+
+        .article-content { font-size: 1.12rem; line-height: 1.8; color: #B4C0D3; }
+        .article-content p { margin-bottom: 24px; }
+        .article-content h2 { font-family: 'DM Serif Display', serif; font-size: 2.2rem; color: var(--text-1); margin: 48px 0 20px; line-height: 1.2; }
+        .article-content h3 { font-family: 'Manrope', sans-serif; font-size: 1.4rem; color: var(--text-1); font-weight: 800; margin: 32px 0 16px; }
+        .article-content strong { color: var(--text-1); font-weight: 700; }
+        .article-content ul, .article-content ol { margin: 0 0 24px 24px; }
+        .article-content li { margin-bottom: 12px; }
+        .article-content li::marker { color: var(--blue); }
+
+        /* step-card (identical to original) */
+        .step-card {
+            background: var(--bg-raised);
+            border-radius: 18px;
+            padding: 28px 28px;
+            margin: 40px 0;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+        .step-card h3 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.6rem;
+            font-family: 'DM Serif Display', serif;
+            margin-bottom: 20px;
+        }
+        .step-number {
+            background: var(--blue);
+            width: 38px;
+            height: 38px;
+            border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: white;
+            font-size: 1.2rem;
+        }
+        .mistake-badge {
+            display: inline-block;
+            background: rgba(245, 197, 66, 0.15);
+            border-radius: 40px;
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            color: var(--gold);
+            margin-bottom: 16px;
+        }
+        .code-compare {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin: 24px 0 20px;
+        }
+        .code-card {
+            background: #070A10;
+            border-radius: 14px;
+            border-left: 4px solid;
+            overflow-x: auto;
+        }
+        .code-card.bad { border-left-color: #ef4444; }
+        .code-card.good { border-left-color: var(--emerald); }
+        .code-header {
+            padding: 12px 20px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .code-header i { font-size: 1rem; }
+        .code-card pre {
+            padding: 18px 20px;
+            margin: 0;
+            font-family: 'Courier New', 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #cfdbf5;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .code-card code {
+            font-family: inherit;
+        }
+        .human-breakdown {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-top: 24px;
+            border: 1px solid var(--border);
+        }
+        .human-breakdown p {
+            margin-bottom: 0;
+            font-size: 1rem;
+        }
+        .human-breakdown i {
+            color: var(--gold);
+            margin-right: 8px;
+        }
+        hr.divider {
+            border-color: var(--border);
+            margin: 48px 0 16px;
+        }
+
+        .final-cta {
+            margin-top: 60px;
+            padding: 32px 28px;
+            background: linear-gradient(145deg, var(--bg-card), var(--bg-raised));
+            border-radius: 24px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        .final-cta a {
+            color: var(--blue);
+            text-decoration: none;
+            font-weight: 700;
+            border-bottom: 1px dashed var(--blue);
+        }
+
+        .callout {
+    /* ඔයා දැනටමත් දාපු Variables පාවිච්චි කරලා */
+    background: var(--bg-card);
+    border-left: 4px solid var(--blue); 
+    
+    /* ඇතුළත සහ පිටත ඉඩ (Spacing) */
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+    
+    /* කොන් ටික සුමට කරන්න (Smooth Corners) */
+    border-radius: 8px;
+    
+    /* 🔮 Glassmorphism Effects */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    
+    /* සියුම් වටේ බෝඩර් එකක් (Edge Light Reflection) */
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    
+    /* 🪐 Depth & Shadows */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    
+    /* ඇතුළේ තියෙන Text එක කියවන්න ලේසි කරන්න */
+    color: #e2e8f0; 
+    line-height: 1.6;
+    font-size: 0.95rem;
+    
+    /* Hover වෙද්දී සුමටව ඇනිමේට් වෙන්න */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* 🔥 Hover Effect: මවුස් එක උඩට ගියාම වෙනස් වීම */
+.callout:hover {
+    transform: translateX(4px); /* දකුණට පොඩ්ඩක් නෙරලා ඒම */
+    background: rgba(255, 255, 255, 0.03); /* ලාවට බ්‍රයිට් වීම */
+    
+    /* වම් පැත්තේ තියෙන බ්ලූ බෝඩර් එකෙන් Neon Glow එකක් එන්න */
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6), 
+                -5px 0 20px -5px var(--blue); 
+}
+    </style>
+</head>
+<body>
+
+<div id="header-content"></div>
+
+<main class="article-wrapper">
+    <header class="article-header">
+        <span class="article-category">Responsive Design • Zero Fluff</span>
+        <h1 class="article-h1">5 Common Responsive Web Design Mistakes and How to Fix Them</h1>
+        <div class="article-meta">
+
+    </header>
+    <img src="WhatsApp Image 2026-05-22 at 2.05.48 PM.webp" class="featured-image">
+    <article class="article-content">
+        <p>You’ve built a sleek layout on your 27-inch monitor, but on a friend’s iPhone everything shrinks to a microscopic mess — or worse, horizontal scroll appears out of nowhere. Most developers (even intermediates) repeat the same responsive sins because they learned CSS in an era of fixed widths and rigid breakpoints. This guide smashes those myths: we’re going through 5 destructive responsive mistakes, and you’ll get <strong>production‑grade before/after code</strong> you can copy today.</p>
+        <p>No abstract theory. Just bad code, good code, and a human breakdown so you never break a layout again.</p>
+
+        <!-- MISTAKE 1 -->
+        <div class="step-card">
+            <h3><span class="step-number">1</span> Hardcoded Absolute Units (px) for Layouts</h3>
+            <div class="mistake-badge">⚠️ THE MISTAKE</div>
+            <p>Using pixels for containers, fonts, and spacing locks your design to one size. It ignores user font preferences, breaks zoom accessibility, and creates rigid overflow on small devices.</p>
+            
+            <div class="code-compare">
+                <div class="code-card bad">
+                    <div class="code-header"><i class="fas fa-times-circle" style="color:#ef4444;"></i> BAD CODE — px nightmare</div>
+                    <pre><code>.hero {
+  width: 1200px;         /* fixed width → horizontal scroll on mobile */
+  font-size: 18px;
+  padding: 30px 40px;
+}
+.title {
+  font-size: 42px;       /* won't scale with browser text settings */
+}</code></pre>
+                </div>
+                <div class="code-card good">
+                    <div class="code-header"><i class="fas fa-check-circle" style="color:var(--emerald);"></i> GOOD CODE — relative units + fluid spacing</div>
+                    <pre><code>.hero {
+  width: 100%;
+  max-width: 1200px;     /* breathes, never overflows */
+  font-size: 1rem;       /* respects root font size */
+  padding: 1.8rem 2.5rem;
+}
+.title {
+  font-size: clamp(2rem, 6vw, 3.5rem); /* fluid typography */
+  /* or simply: 2.5rem / 1rem based */
+}</code></pre>
+                </div>
+            </div>
+            <div class="human-breakdown">
+                <p><i class="fas fa-brain"></i> <strong>Human Breakdown:</strong> Imagine building with clay — px is like using hard plastic blocks that can't stretch. <code>rem/em</code> and <code>%</code> are like elastic bands. <code>max-width</code> gives your container a safety net, while <code>clamp()</code> lets typography breathe naturally between screen sizes. Users who increase default font size will thank you. Always ask: “does this value need to be rigid?”</p>
+            </div>
+        </div>
+
+        <!-- MISTAKE 2 -->
+        <div class="step-card">
+            <h3><span class="step-number">2</span> Missing the Meta Viewport Tag</h3>
+            <div class="mistake-badge">⚠️ THE MISTAKE</div>
+            <p>Without the viewport meta tag, mobile browsers assume a 980px width and scale your design down. Suddenly all your nice responsive CSS feels useless — text becomes tiny, buttons impossible to tap.</p>
+            <div class="code-compare">
+                <div class="code-card bad">
+                    <div class="code-header"><i class="fas fa-times-circle" style="color:#ef4444;"></i> BAD CODE — missing viewport</div>
+                    <pre><code>&lt;head&gt;
+  &lt;title&gt;Broken site&lt;/title&gt;
+  &lt;!-- no viewport meta = mobile disaster --&gt;
+&lt;/head&gt;</code></pre>
+                </div>
+                <div class="code-card good">
+                    <div class="code-header"><i class="fas fa-check-circle" style="color:var(--emerald);"></i> GOOD CODE — standard viewport config</div>
+                    <pre><code>&lt;head&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;!-- tells mobile: use device width, no scaling tricks --&gt;
+&lt;/head&gt;</code></pre>
+                </div>
+            </div>
+            <div class="human-breakdown">
+                <p><i class="fas fa-brain"></i> <strong>Human Breakdown:</strong> The viewport meta tag is like telling your site: “Hey phone, don’t pretend you’re a desktop. Use your actual screen width.” Without it, even perfect flex/grid designs fail. Always include it — it’s the foundation of responsive web. Bonus: adding <code>viewport-fit=cover</code> for notched phones improves modern iOS layouts.</p>
+            </div>
+        </div>
+
+        <!-- MISTAKE 3 -->
+        <div class="step-card">
+            <h3><span class="step-number">3</span> Over‑relying on Rigid Media Queries Instead of Fluid Layouts</h3>
+            <div class="mistake-badge">⚠️ THE MISTAKE</div>
+            <p>Hardcoding 3–4 breakpoints for every component leads to fragile, chaotic CSS. Modern CSS Grid and Flexbox can handle most responsiveness natively without <code>@media</code> bloat.</p>
+            <div class="code-compare">
+                <div class="code-card bad">
+                    <div class="code-header"><i class="fas fa-times-circle" style="color:#ef4444;"></i> BAD CODE — breakpoint jungle</div>
+                    <pre><code>.gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+@media (max-width: 700px) {
+  .gallery { grid-template-columns: 1fr; }
+}
+@media (min-width: 1200px) {
+  .gallery { grid-template-columns: repeat(3, 1fr); }
+}</code></pre>
+                </div>
+                <div class="code-card good">
+                    <div class="code-header"><i class="fas fa-check-circle" style="color:var(--emerald);"></i> GOOD CODE — intrinsic fluid grid</div>
+                    <pre><code>.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+/* zero media queries — columns automatically wrap based on container width */</code></pre>
+                </div>
+            </div>
+            <div class="human-breakdown">
+                <p><i class="fas fa-brain"></i> <strong>Human Breakdown:</strong> <code>auto-fit</code> + <code>minmax(260px, 1fr)</code> tells the browser: “create as many columns as fit, each at least 260px wide, then share leftover space”. It adapts from 1 column on a tiny phone up to 5 columns on ultrawide screens — no media queries needed. Same with flexbox: <code>flex-wrap: wrap</code> + <code>flex: 1 1 240px</code> does magic. Write smart, not more.</p>
+            </div>
+        </div>
+
+        <!-- MISTAKE 4 -->
+        <div class="step-card">
+            <h3><span class="step-number">4</span> Setting Fixed Widths on Container Elements</h3>
+            <div class="mistake-badge">⚠️ THE MISTAKE</div>
+            <p>Using <code>width: 1200px</code> on a wrapper creates horizontal scrolling on anything smaller than 1200px. Users hate that. The solution is elegant: let it breathe with max-width + auto margins.</p>
+            <div class="code-compare">
+                <div class="code-card bad">
+                    <div class="code-header"><i class="fas fa-times-circle" style="color:#ef4444;"></i> BAD CODE — fixed width disaster</div>
+                    <pre><code>.container {
+  width: 1200px;      /* forces overflow on tablets & phones */
+  margin: 0 auto;
+}</code></pre>
+                </div>
+                <div class="code-card good">
+                    <div class="code-header"><i class="fas fa-check-circle" style="color:var(--emerald);"></i> GOOD CODE — fluid + max-width</div>
+                    <pre><code>.container {
+  width: 100%;
+  max-width: 1200px;   /* stops growing, but can shrink */
+  margin-inline: auto;  /* modern equivalent of margin: 0 auto */
+  padding-inline: 1.5rem;
+}</code></pre>
+                </div>
+            </div>
+            <div class="human-breakdown">
+                <p><i class="fas fa-brain"></i> <strong>Human Breakdown:</strong> <code>max-width</code> acts like a ceiling, not a cage. If the viewport is 500px, the container takes 100% of that — no overflow. On large displays it never exceeds 1200px, keeping readability intact. Pair with padding on small screens so content doesn’t stick to edges. This single change fixes >50% of overflow bugs.</p>
+            </div>
+        </div>
+
+        <!-- MISTAKE 5 -->
+        <div class="step-card">
+            <h3><span class="step-number">5</span> Unresponsive and Overflowing Media/Images</h3>
+            <div class="mistake-badge">⚠️ THE MISTAKE</div>
+            <p>Images without sizing rules blast out of containers, cause horizontal scroll bars, and destroy layouts. Even background images can break mobile views if not covered properly.</p>
+            <div class="code-compare">
+                <div class="code-card bad">
+                    <div class="code-header"><i class="fas fa-times-circle" style="color:#ef4444;"></i> BAD CODE — image overflow</div>
+                    <pre><code>img {
+  width: 800px;       /* fixed width, no constraints */
+}
+.hero-img {
+  width: 100%;
+  height: 400px;     /* rigid height, squishes image */
+}</code></pre>
+                </div>
+                <div class="code-card good">
+                    <div class="code-header"><i class="fas fa-check-circle" style="color:var(--emerald);"></i> GOOD CODE — responsive image reset</div>
+                    <pre><code>/* THE universal responsive image reset */
+img, video, iframe {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+/* background images also need love */
+.bg-hero {
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+}</code></pre>
+                </div>
+            </div>
+            <div class="human-breakdown">
+                <p><i class="fas fa-brain"></i> <strong>Human Breakdown:</strong> <code>max-width:100%</code> tells any media element: “You can never be wider than your parent container.” <code>height: auto</code> preserves aspect ratio, preventing squished cats and stretched portraits. Add this CSS reset globally and you’ll sleep better. For responsive background images, <code>background-size: cover</code> ensures the image covers the area without distortion.</p>
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <h2>Final Checklist: The Responsive Mindset</h2>
+        <ul>
+            <li>✅ Viewport meta tag always present</li>
+            <li>✅ Use relative units (<code>rem, %, vw, fr</code>) over <code>px</code> for containers/typography</li>
+            <li>✅ Let CSS Grid + Flexbox do responsive heavy lifting (auto-fit, flex-wrap)</li>
+            <li>✅ <code>max-width</code> instead of fixed width on wrappers</li>
+            <li>✅ Universal image reset: <code>max-width:100%; height:auto;</code></li>
+            <li>✅ Test on real devices or DevTools device mode early, not as an afterthought</li>
+        </ul>
+
+        <div class="callout" style="background: var(--bg-card); border-left-color: var(--blue);">
+            <i class="fas fa-lightbulb" style="color: var(--gold); margin-right: 12px;"></i> <strong>Pro tip:</strong> Start mobile-first. Write base CSS for smallest screens, then add <code>min-width</code> media queries for enhancements. That automatically avoids most desktop-first overflow issues. Combine with modern fluid techniques and you'll rarely write more than 2–3 media queries per project.
+        </div>
+
+
+    </article>
+</main>
+
+<div id="footer-content"></div>
+
+<script>
+    // Header එක සම්බන්ධ කිරීම (with error handling)
+    fetch('header.html')
+        .then(response => {
+            if (!response.ok) throw new Error('Header not found');
+            return response.text();
+        })
+        .then(data => {
+            document.getElementById('header-content').innerHTML = data;
+        })
+        .catch(err => console.warn('Could not load header:', err));
+
+    // Footer එක සම්බන්ධ කිරීම (with error handling)
+    fetch('footer.html')
+        .then(response => {
+            if (!response.ok) throw new Error('Footer not found');
+            return response.text();
+        })
+        .then(data => {
+            document.getElementById('footer-content').innerHTML = data;
+        })
+        .catch(err => console.warn('Could not load footer:', err));
+</script>
+</body>
+</html>

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    
+    <title>Technical Articles & Engineering Insights | Vortexia</title>
+    <meta name="title" content="Technical Articles & Engineering Insights">
+    <meta name="description" content="All the technical deep-dives, unbiased server cloud benchmarks, and modern infrastructure guides written for serious builders.">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://vortexia.site/content.html">
+    <meta property="og:title" content="Technical Articles & Engineering Insights">
+    <meta property="og:description" content="All the technical deep-dives, unbiased server cloud benchmarks, and modern infrastructure guides written for serious builders.">
+    <meta property="og:image" content="https://vortexia.site/vortexia_16x9_hq.webp">
+    
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://vortexia.site/content.html">
+    <meta property="twitter:title" content="Technical Articles & Engineering Insights">
+    <meta property="twitter:description" content="All the technical deep-dives, unbiased server cloud benchmarks, and modern infrastructure guides written for serious builders.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <script src="header.js" defer></script>
+    
+    <style>
+        /* ------------------------------------------------------------
+           1. RESET & DESIGN SYSTEM (Vortexia Matching - Preserved)
+        ------------------------------------------------------------ */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-base:       #07090F;
+            --bg-raised:     #0C1018;
+            --bg-card:       #101520;
+            --bg-card-hover: #141C2C;
+            --border:        #1C2438;
+            --text-1:        #EEF3FF;
+            --text-2:        #8E9AB0;
+            --text-3:        #5A6478;
+            --blue:          #4F9EF8;
+            --blue-dk:       #2563EB;
+            --gold:          #F5C542;
+            --emerald:       #22C991;
+            --radius-card:   24px;
+            --radius-pill:   999px;
+            --sh-sm:         0 6px 28px -12px rgba(0, 0, 0, 0.8);
+            --transition-smooth: 0.45s cubic-bezier(0.2, 0.95, 0.4, 1.05);
+            --transition-brisk:  0.25s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            background: var(--bg-base);
+            color: var(--text-2);
+            font-family: 'Manrope', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.65;
+        }
+
+        body::before {
+            content: ''; position: fixed; inset: 0;
+            background-image: radial-gradient(circle at 50% 50%, rgba(79, 158, 248, 0.015) 1px, transparent 1px);
+            background-size: 32px 32px; pointer-events: none; z-index: 0;
+        }
+
+        h1, h2, h3 { font-family: 'DM Serif Display', serif; color: var(--text-1); font-weight: 500; letter-spacing: -0.01em; }
+
+        .container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header & Footer placeholders (dynamic fetch) */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            background: rgba(7, 9, 15, 0.88);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            height: 72px;
+        }
+        .footer-placeholder {
+            background: var(--bg-raised);
+            border-top: 1px solid var(--border);
+            padding: 60px 0 36px;
+            text-align: center;
+            color: var(--text-3);
+            font-size: 0.9rem;
+        }
+
+        /* ------------------------------------------------------------
+           2. HERO & FILTER SECTION (Fully responsive)
+        ------------------------------------------------------------ */
+        .content-hero {
+            padding: 100px 0 60px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .content-hero::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 400px;
+            background: radial-gradient(ellipse, rgba(79, 158, 248, 0.12) 0%, transparent 70%);
+            filter: blur(40px);
+            pointer-events: none;
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--blue);
+            margin-bottom: 20px;
+        }
+
+        .page-title {
+            font-size: clamp(2.2rem, 6vw, 3.8rem);
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+        .page-subtitle {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            color: var(--text-2);
+        }
+
+        /* Categories Filter Bar - Mobile optimized */
+        .filter-bar {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 48px;
+            padding: 0 8px;
+        }
+
+        .filter-btn {
+            background: var(--bg-card);
+            color: var(--text-2);
+            border: 1px solid var(--border);
+            padding: 10px 24px;
+            border-radius: var(--radius-pill);
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-brisk);
+            backdrop-filter: blur(4px);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--blue);
+            color: var(--text-1);
+            transform: translateY(-1px);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--blue-dk), var(--blue));
+            color: #FFFFFF;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(79, 158, 248, 0.3);
+        }
+
+        /* ------------------------------------------------------------
+           3. ARTICLES GRID (responsive + optimised)
+        ------------------------------------------------------------ */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 32px;
+            margin-bottom: 100px;
+        }
+
+        .article-card {
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            background: var(--bg-card);
+            border-radius: var(--radius-card);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            height: 100%;
+            transition: all var(--transition-smooth);
+            box-shadow: var(--sh-sm);
+            will-change: transform;
+        }
+
+        .article-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(79, 158, 248, 0.5);
+            box-shadow: 0 22px 40px -16px rgba(79, 158, 248, 0.25);
+        }
+
+        .card-img-wrap {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 16 / 10;
+            width: 100%;
+            border-bottom: 1px solid var(--border);
+            background: #0d111a;
+        }
+
+        .card-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            display: block;
+        }
+
+        .article-card:hover .card-img-wrap img {
+            transform: scale(1.04);
+        }
+
+        .category-badge {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            background: rgba(7, 9, 15, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            color: var(--blue);
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: var(--radius-pill);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            z-index: 2;
+        }
+
+        .card-body {
+            padding: 26px 24px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .card-title {
+            font-size: 1.3rem;
+            color: var(--text-1);
+            margin-bottom: 12px;
+            line-height: 1.4;
+            transition: color var(--transition-brisk);
+        }
+        .article-card:hover .card-title {
+            color: var(--blue);
+        }
+        .card-excerpt {
+            font-size: 0.9rem;
+            color: var(--text-2);
+            line-height: 1.6;
+            margin-bottom: 24px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 18px;
+            border-top: 1px solid var(--border);
+            font-size: 0.8rem;
+            color: var(--text-3);
+            font-weight: 600;
+        }
+
+        /* Empty / no results state */
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 24px;
+            background: var(--bg-card);
+            border-radius: var(--radius-card);
+            border: 1px solid var(--border);
+            color: var(--text-2);
+            font-size: 1rem;
+        }
+
+        /* ------------------------------------------------------------
+           4. ENHANCED MOBILE RESPONSIVENESS (clean + adaptive)
+        ------------------------------------------------------------ */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+            .content-hero {
+                padding: 60px 0 40px;
+            }
+            .page-subtitle {
+                font-size: 1rem;
+                padding: 0 8px;
+            }
+            .articles-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            .filter-bar {
+                gap: 10px;
+                margin-bottom: 36px;
+            }
+            .filter-btn {
+                padding: 7px 18px;
+                font-size: 0.85rem;
+            }
+            .card-body {
+                padding: 22px 20px;
+            }
+            .card-title {
+                font-size: 1.2rem;
+            }
+            .section-label {
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .filter-btn {
+                padding: 6px 16px;
+                font-size: 0.8rem;
+            }
+            .filter-bar {
+                gap: 8px;
+            }
+            .card-body {
+                padding: 20px 18px;
+            }
+            .category-badge {
+                font-size: 0.65rem;
+                padding: 3px 12px;
+                bottom: 12px;
+                left: 12px;
+            }
+        }
+
+        /* subtle loading improvement */
+        img {
+            background: #11161f;
+        }
+        .fa-arrow-right {
+            transition: transform 0.2s ease;
+        }
+        .article-card:hover .fa-arrow-right {
+            transform: translateX(3px);
+        }
+    </style>
+</head>
+<body>
+
+<div id="header-content"></div>
+
+<main class="container">
+    <section class="content-hero">
+        <div class="section-label"><i class="fas fa-book-open"></i> Knowledge Base</div>
+        <h1 class="page-title">Engineering Insights</h1>
+        <p class="page-subtitle">Explore technical deep-dives, unbiased server cloud benchmarks, and modern infrastructure guides written for serious builders.</p>
+        
+        <div class="filter-bar" id="filter-bar">
+            <button class="filter-btn active" data-filter="all">All Ecosystem</button>
+            <button class="filter-btn" data-filter="benchmarks">Benchmarks</button>
+            <button class="filter-btn" data-filter="guides">Technical Guides</button>
+            <button class="filter-btn" data-filter="security">Security</button>
+        </div>
+    </section>
+
+    <section class="articles-grid" id="content-grid">
+        <!-- Dynamic articles will be injected here -->
+    </section>
+</main>
+
+<div id="footer-content"></div>
+
+<script>
+    // ------------------------------------------------------------
+    // 1. ARTICLES DATA MODEL (all technical articles)
+    // ------------------------------------------------------------
+    const articlesData = [
+        {
+            title: "How to Host a High-Performance Website for Beginners in 2026",
+            category: "guides",
+            image: "ChatGPT Image May 19, 2026, 12_06_08 PM.webp",
+            excerpt: "Learn the essential multi-region steps required to create a hyper-fast production website that sustains high loads gracefully under complex edge environments.",
+            link: "high-performance-website.html"
+        },
+        {
+            title: "How to Build a Stunning Portfolio Website in 15 Minutes",
+            category: "guides",
+            image: "ChatGPT Image May 20, 2026, 12_42_01 PM.webp",
+            excerpt: "Learn how to create a highly optimized professional developer portfolio system in just 15 minutes using fast modern static tools layout pipelines.",
+            link: "portfolio-website-in-15-minutes.html"
+        },
+        {
+            title: "Hostinger vs GoDaddy in 2026: The Honest Truth After 12 Months of Testing",
+            category: "benchmarks",
+            image: "1Emiz.webp",
+            excerpt: "An architectural deep-dive comparison of two major global hosting networks evaluated purely using cluster performance response analytics.",
+            link: "hostinger-vs-godaddy.html"
+        },
+        {
+            title: "10 Steps to Secure Your Website",
+            category: "security",
+            image: "WhatsApp Image 2026-05-21 at 7.02.25 PM.webp",
+            excerpt: "Implement modern server perimeter controls, strict edge encryption validation layers, and solid basic security fundamentals for production deployments.",
+            link: "secure-your-website.html"
+        },
+        {
+            title: "How to Build Your Own Local AI Coding Assistant in VS Code",
+            category: "guides",
+            image: "WhatsApp Image 2026-05-21 at 7.02.26 PM.webp",
+            excerpt: "Step-by-step guide to run DeepSeek-Coder, Llama 3 locally with Ollama + Continue.dev. Privacy-first, zero cost, full control.",
+            link: "own-local-aI-coding-assistant.html"
+        },
+        {
+            title: "Unlocking Router Firmware",
+            category: "guides",
+            image: "WhatsApp Image 2026-05-22 at 2.14.54 PM.webp",
+            excerpt: "Learn to flash OpenWrt like a network engineer. Bypass ISP locks, unlock custom firewalls, VPN, and hidden bands.",
+            link: "unlocking-router-firmware.html"
+        },
+        {
+            title: "5 Common Responsive Web Design Mistakes and How to Fix Them",
+            category: "guides",
+            image: "WhatsApp Image 2026-05-22 at 2.05.48 PM.webp",
+            excerpt: "Discover the top 5 responsive web design mistakes that can harm your site's performance and user experience, along with practical solutions to fix them effectively.",
+            link: "web-design-mistakes-and-how-to-fix-them.html"
+        },
+
+        {
+            title: "How Small Businesses Can Beat Big E‑commerce Sites in Speed",
+            category: "guides",
+            image: "ChatGPT Image May 25, 2026, 12_14_47 PM.webp",
+            excerpt: "Discover how small businesses can outperform giants like Amazon and Alibaba in website speed by adopting lean, optimized web development practices and modern hosting solutions.",
+            link: "small-businesses-can-beat.html"
+        },
+
+        {
+            title: "The Developer’s Blueprint to a 0ms Total Blocking Time",
+            category: "guides",
+            image: "ChatGPT Image May 26, 2026, 05_07_01 PM.webp",
+            excerpt: "Achieve 0ms Total Blocking Time (TBT) in Lighthouse with surgical control of the main thread. Dismantle long tasks, implement yielding strategies, and rewrite JavaScript interactions for lightning-fast responsiveness.",
+            link: "developer-blueprint-to-a-total-blocking-time.html"
+        },
+
+        {
+            title: "Is WordPress Burning Your Business Cash?",
+            category: "benchmarks",
+            image: "WhatsApp Image 2026-05-27 at 12.42.03 PM.webp",
+            excerpt: "A deep-dive performance analysis of WordPress in 2026, revealing how its bloated architecture can lead to slow load times, high hosting costs, and lost revenue for businesses. Explore leaner, faster alternatives to supercharge your online presence.",
+            link: "is-wordpress-burning-your-business-cash.html"
+        }
+    ];
+
+    // Helper: Format category for display (capitalize first letter)
+    function formatCategory(cat) {
+        if (cat === "benchmarks") return "Benchmarks";
+        if (cat === "guides") return "Technical Guides";
+        if (cat === "security") return "Security";
+        return cat.charAt(0).toUpperCase() + cat.slice(1);
+    }
+
+    // Render articles based on filter
+    const gridContainer = document.getElementById('content-grid');
+    let currentFilter = 'all';
+
+    function renderArticles(filter = 'all') {
+        if (!gridContainer) return;
+        
+        const filteredArticles = filter === 'all' 
+            ? articlesData 
+            : articlesData.filter(article => article.category === filter);
+        
+        if (filteredArticles.length === 0) {
+            gridContainer.innerHTML = `<div class="no-results"><i class="fas fa-filter" style="margin-right: 8px;"></i> No articles found in this category. Explore other topics!</div>`;
+            return;
+        }
+        
+        // Build HTML grid with optimized images & clean structure
+        const html = filteredArticles.map(article => {
+            // handle images with fallback encoding (space-safe but keep as is)
+            const imgSrc = article.image || '';
+            return `
+                <a class="article-card" href="${article.link}">
+                    <div class="card-img-wrap">
+                        <img src="${imgSrc}" alt="${article.title.replace(/&/g, '&amp;')}" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='https://placehold.co/600x400/101520/4F9EF8?text=Article+Image';">
+                        <div class="category-badge">${formatCategory(article.category)}</div>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">${article.title}</h3>
+                        <p class="card-excerpt">${article.excerpt}</p>
+                        <div class="card-footer">
+                            <div>Read Article <i class="fas fa-arrow-right" style="font-size:0.75rem; margin-left:4px;"></i></div>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }).join('');
+        
+        gridContainer.innerHTML = html;
+    }
+
+    // ------------------------------------------------------------
+    // 2. FILTER INTERACTION & ACTIVE STATE
+    // ------------------------------------------------------------
+    function initFiltering() {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        if (!filterButtons.length) return;
+        
+        function setActiveFilter(activeBtn) {
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            activeBtn.classList.add('active');
+        }
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const filterValue = button.getAttribute('data-filter');
+                if (!filterValue) return;
+                currentFilter = filterValue;
+                setActiveFilter(button);
+                renderArticles(currentFilter);
+            });
+        });
+    }
+
+    // ------------------------------------------------------------
+    // 3. HEADER & FOOTER DYNAMIC FETCH (clean, no duplicates)
+    // ------------------------------------------------------------
+    async function loadComponent(elementId, filePath, fallbackHtml = '') {
+        try {
+            const response = await fetch(filePath);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const html = await response.text();
+            const targetElement = document.getElementById(elementId);
+            if (targetElement) targetElement.innerHTML = html;
+        } catch (err) {
+            console.warn(`Could not load ${filePath}:`, err);
+            const targetElement = document.getElementById(elementId);
+            if (targetElement && fallbackHtml) {
+                targetElement.innerHTML = fallbackHtml;
+            } else if (targetElement && elementId === 'footer-content') {
+                targetElement.innerHTML = `<div class="footer-placeholder"><span>© 2026 Vortexia — Engineering insights</span></div>`;
+            } else if (targetElement && elementId === 'header-content') {
+                targetElement.innerHTML = `<div class="header" style="display: flex; align-items: center; justify-content: center; font-size:0.9rem; color:var(--text-3);">Vortexia // Tech Library</div>`;
+            }
+        }
+    }
+
+    // ------------------------------------------------------------
+    // 4. INITIALIZE PAGE (DOM ready, no double calls)
+    // ------------------------------------------------------------
+    document.addEventListener('DOMContentLoaded', async () => {
+        // load header and footer in parallel (non-blocking)
+        await Promise.all([
+            loadComponent('header-content', 'header.html', '<div class="header" style="display: flex; align-items: center; justify-content: space-between; padding: 0 24px;"><span style="font-weight: 600;">Vortexia</span><span style="font-size:0.8rem;">⚡ engineering hub</span></div>'),
+            loadComponent('footer-content', 'footer.html', '')
+        ]);
+        
+        // Initialize filter UI and render default articles
+        initFiltering();
+        renderArticles('all');
+        
+        // Additional safety: if filter bar buttons were not found after dynamic header load (rare) re-attach?
+        // But since filter bar is inside main content, it's already available.
+        // Ensure active class consistency after render
+        const activeFilterBtn = document.querySelector('.filter-btn.active');
+        if (!activeFilterBtn && document.querySelector('.filter-btn')) {
+            document.querySelector('.filter-btn[data-filter="all"]')?.classList.add('active');
+        }
+    });
+    
+    // Edge case: if images have broken paths but we added onerror fallback (graceful degradation)
+    // Also no double header/footer fetch – cleaned logic.
+    // Ensure any residual duplicate fetch removed: original had double fetch, now removed.
+</script>
+</body>
+</html>

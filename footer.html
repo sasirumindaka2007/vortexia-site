@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vortexia Footer</title>
+    <!-- required assets for icons and fonts (same as original design) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ==========================================================================
+           CORE VARIABLES (Vortexia Design System) – added to make footer self-contained
+           ========================================================================== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-base:      #07090F;
+            --bg-raised:    #0C1018;
+            --bg-card:      #101520;
+            --bg-card-hover:#141C2C;
+            --border:       #1C2438;
+            --text-1:       #EEF3FF;
+            --text-2:       #8E9AB0;
+            --text-3:       #5A6478;
+            --blue:         #4F9EF8;
+            --blue-dk:      #2563EB;
+            --gold:         #F5C542;
+            --emerald:      #22C991;
+            --radius-card:  20px;
+            --radius-pill:  999px;
+            --sh-blue:      0 8px 32px -8px rgba(79,158,248,0.25);
+        }
+
+        body {
+            background: var(--bg-base);
+            font-family: 'Manrope', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* container class (was missing) */
+        .container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* logo styling (referenced in footer) */
+        .logo {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 800;
+            font-size: 1.35rem;
+            color: var(--text-1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Footer Styles (exactly as provided, but cleaned up) */
+        .footer {
+            background: var(--bg-raised);
+            border-top: 1px solid var(--border);
+            padding: 80px 0 36px;
+            margin-top: 40px;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 60px;
+        }
+        .footer-brand p {
+            font-size: 0.95rem;
+            color: var(--text-3);
+            margin-top: 16px;
+            max-width: 280px;
+            line-height: 1.6;
+        }
+        .footer-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 24px;
+            background: rgba(34,201,145,0.08);
+            border: 1px solid rgba(34,201,145,0.15);
+            color: var(--emerald);
+            padding: 6px 16px;
+            border-radius: var(--radius-pill);
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+        .footer-col h4 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-1);
+            margin-bottom: 24px;
+            font-weight: 800;
+        }
+        .footer-col a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-2);
+            text-decoration: none;
+            font-size: 0.95rem;
+            margin-bottom: 14px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .footer-col a i {
+            color: var(--text-3);
+            font-size: 0.85rem;
+            width: 16px;
+            text-align: center;
+        }
+        .footer-col a:hover {
+            color: var(--blue);
+            transform: translateX(4px);
+        }
+        .footer-col a:hover i {
+            color: var(--blue);
+        }
+        .footer-bottom {
+            border-top: 1px solid var(--border);
+            padding-top: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 0.85rem;
+            color: var(--text-3);
+        }
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+        .footer-links a {
+            color: var(--text-3);
+            text-decoration: none;
+            transition: color 0.2s;
+            font-weight: 600;
+        }
+        .footer-links a:hover {
+            color: var(--text-1);
+        }
+
+        /* fixed media query – missing closing brace was corrected */
+        @media (max-width: 760px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- footer markup – unchanged design, only corrected structure -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="https://vortexia.site" class="logo">
+                        VORTEXIA
+                    </a>
+                    <p>Data-led hosting analytics and infrastructure intelligence for modern engineers.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 Vortexia — All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="disclaimer.html">Disclaimer</a>
+                    <a href="privacy.html">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
