@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Masterclass: Diagnose & Fix Long Tasks in Chrome DevTools (2026)</title>
+    <meta name="title" content="Masterclass: Diagnose & Fix Long Tasks in Chrome DevTools">
+    <meta name="description" content="Step-by-step performance masterclass: locate, profile, and eliminate Long Tasks (>50ms) destroying TBT and INP using Chrome DevTools. Elite techniques.">
+    
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://vortexia.site/devtools-long-tasks-masterclass.html">
+    <meta property="og:title" content="How to Diagnose and Fix Long Tasks in Chrome DevTools (Core Web Vitals Guide)">
+    <meta property="og:description" content="Hands-on guide to find and destroy main-thread blocking tasks using Flame Charts, Bottom-Up analysis, Web Workers, and cooperative scheduling.">
+    <meta property="og:image" content="https://vortexia.site/performance-masterclass-og.webp">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Masterclass: Fix Long Tasks in Chrome DevTools">
+    <meta name="twitter:description" content="Practical deep-dive: from recording performance profiles to eliminating long tasks completely. Achieve 0ms TBT.">
+    
+    <link rel="canonical" href="https://vortexia.site/devtools-long-tasks-masterclass.html">
+    <meta name="robots" content="index, follow">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <script src="header.js" defer></script>
+
+    <style>
+        /* ==========================================================================
+           Vortexia Design – Dark Tech (consistent with original master layout)
+           ========================================================================== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-base:      #07090F;
+            --bg-raised:    #0C1018;
+            --bg-card:      #101520;
+            --bg-card-hover:#141C2C;
+            --border:       #1C2438;
+            --text-1:       #EEF3FF;
+            --text-2:       #8E9AB0;
+            --text-3:       #5A6478;
+            --blue:         #4F9EF8;
+            --blue-dk:      #2563EB;
+            --gold:         #F5C542;
+            --emerald:      #22C991;
+            --radius-card:  20px;
+            --radius-pill:  999px;
+            --sh-blue:      0 8px 32px -8px rgba(79,158,248,0.25);
+            --code-bg:      #0A0E16;
+        }
+
+        body {
+            background: var(--bg-base);
+            color: var(--text-2);
+            font-family: 'Manrope', sans-serif;
+            font-size: 16px;
+            line-height: 1.65;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: ''; position: fixed; inset: 0;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 28px 28px; pointer-events: none; z-index: 0;
+        }
+
+        .article-wrapper {
+            max-width: 880px;
+            margin: 64px auto 100px;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .article-header { text-align: center; margin-bottom: 48px; }
+        .article-category { color: var(--blue); font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; display: block; }
+        .article-h1 { font-family: 'DM Serif Display', serif; font-size: clamp(2.4rem, 5vw, 3.8rem); color: var(--text-1); line-height: 1.15; margin-bottom: 24px; }
+        .featured-image { width: 100%; height: auto; border-radius: var(--radius-card); margin-bottom: 48px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid var(--border); }
+
+        .article-content { font-size: 1.12rem; line-height: 1.8; color: #B4C0D3; }
+        .article-content p { margin-bottom: 24px; }
+        .article-content h2 { font-family: 'DM Serif Display', serif; font-size: 2.2rem; color: var(--text-1); margin: 48px 0 20px; line-height: 1.2; }
+        .article-content h3 { font-family: 'Manrope', sans-serif; font-size: 1.4rem; color: var(--text-1); font-weight: 800; margin: 32px 0 16px; }
+        
+        .article-content code, .article-content pre {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--code-bg);
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+        .article-content pre {
+            padding: 20px;
+            overflow-x: auto;
+            margin: 24px 0;
+            border: 1px solid var(--border);
+            line-height: 1.5;
+        }
+        .article-content code {
+            padding: 0.2rem 0.4rem;
+            background: rgba(79,158,248,0.15);
+            color: var(--blue);
+            border-radius: 8px;
+        }
+        .article-content pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+            border-radius: 0;
+            font-size: inherit;
+        }
+        
+        .article-content strong { color: var(--text-1); font-weight: 700; }
+        .article-content ul, .article-content ol { margin: 0 0 24px 24px; }
+        .article-content li { margin-bottom: 12px; }
+        .article-content li::marker { color: var(--blue); }
+
+        .callout {
+            background: var(--bg-card);
+            border-left: 6px solid var(--emerald);
+            padding: 24px 28px;
+            border-radius: 0 20px 20px 0;
+            margin: 36px 0;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+        }
+        .callout-warning {
+            border-left-color: #F5C542;
+            background: rgba(245,197,66,0.05);
+        }
+        .comparison-table {
+            background: var(--bg-raised);
+            border-radius: var(--radius-card);
+            border: 1px solid var(--border);
+            overflow-x: auto;
+            margin: 32px 0;
+        }
+        .comparison-table table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .comparison-table th { background: rgba(79,158,248,0.1); color: var(--text-1); padding: 14px 16px; text-align: left; }
+        .comparison-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+        .comparison-table tr:last-child td { border-bottom: none; }
+
+        .flame-mock {
+            background: #0A0E16;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            padding: 20px;
+            margin: 32px 0;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .flame-bar {
+            display: flex;
+            align-items: flex-end;
+            gap: 6px;
+            margin-top: 16px;
+        }
+        .task-block {
+            background: #2a3950;
+            height: 36px;
+            border-radius: 6px;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .long-task {
+            background: repeating-linear-gradient(45deg, #d43f1f, #d43f1f 8px, #b02a0c 8px, #b02a0c 16px);
+            border: 1px solid #ff6347;
+            position: relative;
+        }
+        .red-corner {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 0;
+            height: 0;
+            border-top: 14px solid #ffffff;
+            border-left: 14px solid transparent;
+        }
+        .browser-analogy {
+            background: rgba(34, 201, 145, 0.08);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 20px 0;
+            font-style: italic;
+            border-left: 3px solid var(--emerald);
+        }
+        .bad-good {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin: 24px 0;
+        }
+        .bad-card, .good-card {
+            flex: 1;
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+        .bad-card h4 { color: #ff8e8e; }
+        .good-card h4 { color: var(--emerald); }
+
+        .site-header {
+            border-bottom: 1px solid var(--border);
+            background: rgba(7,9,15,0.8);
+            backdrop-filter: blur(10px);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .logo a { color: var(--text-1); text-decoration: none; font-weight: 800; font-size: 1.4rem; letter-spacing: -0.5px; }
+        .nav a { color: var(--text-2); margin-left: 24px; text-decoration: none; font-weight: 500; }
+        @media (max-width: 720px) { .bad-good { flex-direction: column; } .site-header { flex-direction: column; gap: 12px; } }
+    </style>
+</head>
+<body>
+
+    <div id="header-content"></div>
+
+<main class="article-wrapper">
+    <header class="article-header">
+        <span class="article-category">CHROME DEVTOOLS • CORE WEB VITALS</span>
+        <h1 class="article-h1">How to Diagnose and Fix Long Tasks in Chrome DevTools</h1>
+        <p style="font-size:1.2rem; color:var(--text-2); max-width:720px; margin:0 auto;">Destroy Total Blocking Time (TBT) & INP by eliminating main‑thread blocking >50ms — an elite performance masterclass</p>
+    </header>
+
+        <img src="ChatGPT Image May 29, 2026, 10_09_05 PM.webp" alt="High performance server code" class="featured-image">
+
+
+    <article class="article-content">
+        <p><strong>Reality check:</strong> A single JavaScript task that exceeds 50ms blocks user input, janks animations, and destroys your Core Web Vitals. Unprofiled JavaScript is the #1 reason for failing TBT and INP. In this masterclass, you'll learn to <strong>spot, profile, and surgically eliminate Long Tasks</strong> using Chrome DevTools — no guesswork, just exact fixes.</p>
+
+        <div class="callout">
+            <strong>🛠️ DEVTOOLS PRO-TIP:</strong> Enable "Show timings" and "Web Vitals" track in Performance panel. Record interactions with CPU Throttling set to 4x slowdown — this simulates a budget mobile device (like Moto G4) and reveals hidden long tasks that feel smooth on high-end machines.
+        </div>
+
+        <h2>Anatomy of a Long Task: The 50ms Threshold</h2>
+        <p>Every JavaScript task that occupies the main thread for <strong>> 50ms</strong> is officially a "Long Task". Why 50ms? Because the browser needs ~50ms to respond to user input while still rendering smoothly. Any longer, and the event loop freezes — clicks, keystrokes, scrolls all get delayed. The result: high Total Blocking Time (TBT) and poor Interaction to Next Paint (INP).</p>
+
+        <div class="flame-mock">
+            <div style="font-family: monospace; font-size:0.8rem;"><i class="fas fa-chart-line"></i> Flame Chart Visualization (DevTools style)</div>
+            <div class="flame-bar">
+                <div class="task-block" style="width:70px;"></div>
+                <div class="task-block long-task" style="width:180px;">
+                    <div class="red-corner"></div>
+                </div>
+                <div class="task-block" style="width:45px;"></div>
+                <div class="task-block long-task" style="width:150px;">
+                    <div class="red-corner"></div>
+                </div>
+                <div class="task-block" style="width:60px;"></div>
+            </div>
+            <div style="margin-top: 16px; display: flex; gap: 24px;">
+                <span><span style="background:#d43f1f; display:inline-block; width:20px; height:12px;"></span> Long Task >50ms + ▲ white corner triangle</span>
+                <span><span style="background:#2a3950; width:20px; height:12px; display:inline-block;"></span> Short tasks (healthy)</span>
+            </div>
+            <p class="browser-analogy" style="margin-top:16px;"><strong>🧠 The Browser Mechanics Breakdown:</strong> The event loop is like a single cashier at a busy store. Long tasks are customers who take minutes to checkout — everyone else waits (clicks, renders, inputs). DevTools' red corner flags those problematic customers.</p>
+        </div>
+
+        <h2>Diagnostic Phase: Record, Locate & Blame</h2>
+        <h3>Step 1: Open DevTools → Performance Panel</h3>
+        <ul>
+            <li>Press <kbd>F12</kbd> or <kbd>Cmd+Option+I (Mac)</kbd> → <strong>Performance</strong> tab.</li>
+            <li>Click the gear icon ⚙️ → set <strong>CPU throttling: 4x slowdown</strong> (or 6x for low-end devices).</li>
+            <li>Select <strong>"Enable advanced instrumentation"</strong> (layout shifts, paint, etc).</li>
+        </ul>
+
+        <h3>Step 2: Record page load or interaction</h3>
+        <ul>
+            <li>Press <strong>⏺ Record</strong>, then reload the page or click a button that feels laggy. Stop recording after 3–5 seconds.</li>
+            <li>Look for tasks marked with a <span style="color:#ff6347;">red triangular corner</span> in the flame chart—those are Long Tasks (>50ms).</li>
+        </ul>
+
+        <div class="callout">
+            <strong>🎯 LOCATE THE CULPRIT:</strong> Switch to the <strong>"Bottom-Up"</strong> tab. Sort by "Total Time". Any function with high self-time? Expand the call stack — you’ll see the exact script, line number, and function responsible for the block. For server-side rendering, look for heavy loops, JSON.stringify, or regex execution.
+        </div>
+
+        <h3>Step 3: Call Tree & Summary Analysis</h3>
+        <p>In the "Call Tree" view, DevTools aggregates activities. Look for <code>(anonymous)</code> or your own functions with long duration. Third-party scripts (analytics, widgets) often cause Long Tasks — check the "URL" column to isolate them. Using <strong>"Event Log"</strong> tab, you can filter by "Long task" to get precise duration ranges.</p>
+
+        <div class="comparison-table">
+            <table>
+                <thead><tr><th>Long Task Culprit</th><th>Real-world Impact</th><th>Exact Fix</th></tr></thead>
+                <tbody>
+                    <tr><td>Massive synchronous loops (array mapping, DOM manipulation)</td><td>Blocks thread > 200ms, TBT skyrockets</td><td>Chunk with <code>setTimeout</code> or <code>scheduler.yield</code> → Cooperative scheduling</td></tr>
+                    <tr><td>Heavy JSON parsing / serialization (large API responses)</td><td>Parsing 5MB JSON can take 150+ms on main thread</td><td>Stream JSON, use <code>JSON.parse</code> in Web Worker, or partial hydration</td></tr>
+                    <tr><td>Third-party scripts (tag managers, heatmaps)</td><td>Multiple long tasks, unpredictable</td><td>Lazy load, defer, or use <code>partytown</code> (offload to web worker)</td></tr>
+                    <tr><td>Expensive style recalc / forced layout (DOM reads/writes)</td><td>Layout thrashing + long paint</td><td>Batch DOM writes using <code>requestAnimationFrame</code>, avoid getBoundingClientRect after mutations</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>The Fixing Phase: Code Blueprints That Erase Long Tasks</h2>
+
+        <h3>Scenario A: Breaking a massive array processing loop</h3>
+        <div class="bad-good">
+            <div class="bad-card">
+                <h4><i class="fas fa-skull-crosswalk"></i> BAD: Blocking loop</h4>
+                <pre><code>function processItems(items) {
+  for (let i = 0; i < items.length; i++) {
+    heavyComputation(items[i]); // 1000 iterations → 200ms
+  }
+}</code></pre>
+            </div>
+            <div class="good-card">
+                <h4><i class="fas fa-check-circle"></i> GOOD: Cooperative chunking (yield)</h4>
+                <pre><code>async function processChunks(items, chunkSize = 50) {
+  for (let i = 0; i < items.length; i += chunkSize) {
+    const chunk = items.slice(i, i + chunkSize);
+    for (const item of chunk) heavyComputation(item);
+    await new Promise(resolve => setTimeout(resolve, 0)); // yield main thread
+  }
+}</code></pre>
+            </div>
+        </div>
+        <div class="browser-analogy">
+            <strong>🔧 Browser Mechanics Breakdown:</strong> <code>setTimeout(fn,0)</code> inserts the rest of the work at the end of the event loop queue, giving the browser a chance to handle clicks, repaints, and scrolls between chunks. Your page stays interactive, and no individual task exceeds 50ms.
+        </div>
+
+        <h3>Advanced: Using requestIdleCallback for background priority</h3>
+        <pre><code>function idleProcess(items) {
+  let index = 0;
+  function processBatch(deadline) {
+    while (index < items.length && deadline.timeRemaining() > 5) {
+      heavyComputation(items[index++]);
+    }
+    if (index < items.length) requestIdleCallback(processBatch);
+  }
+  requestIdleCallback(processBatch);
+}</code></pre>
+        <p><em>Ideal for non-urgent data preprocessing — respects user interactions by yielding when idle.</em></p>
+
+        <h3>Scenario B: Offload Heavy Math to Web Worker (GPU-level solution)</h3>
+        <pre><code>// main.js
+const worker = new Worker('heavy-worker.js');
+worker.postMessage(largeDataSet);
+worker.onmessage = (e) => {
+  console.log('Result ready (main thread free!)', e.data);
+};
+
+// heavy-worker.js
+self.onmessage = function(e) {
+  const result = e.data.map(item => expensiveTransform(item));
+  self.postMessage(result);
+};</code></pre>
+        <div class="browser-analogy">
+            💡 <strong>Browser Mechanics Breakdown:</strong> Web Workers run on a separate OS thread, parallel to the main thread. The main thread remains fully responsive — scrolling, animations, clicks all unaffected. The heavy computation is isolated, never creating a Long Task.
+        </div>
+
+        <div class="callout callout-warning">
+            <strong>⚡ ADVANCED DIAGNOSTIC CHROME FLAG:</strong> Navigate to <code>chrome://flags/#enable-devtools-experiments</code> → enable "Performance panel trace events" + "Detailed heap snapshots". Then in DevTools → Performance → capture with "Screenshots" and "Advanced paint instrumentation" for pixel-perfect long task attribution.
+        </div>
+
+        <h2>Real Code Example: Fix JSON.parse (Long Task from Large API)</h2>
+        <pre><code>// BEFORE (blocking main thread)
+const response = await fetch('/api/big-data');
+const data = JSON.parse(await response.text()); // 150ms parse → Long Task!
+
+// AFTER: Web Worker parse (non-blocking)
+const worker = new Worker('json-worker.js');
+worker.postMessage(await response.text());
+worker.onmessage = (e) => updateUI(e.data);</code></pre>
+        <p><strong>Verification:</strong> Reload with CPU throttling 4x and watch the flame chart — the purple JSON Parse activity disappears from main thread. TBT drops to 0ms for parse-related tasks.</p>
+
+        <h2>Verification: Re-run Lighthouse & Measure TBT</h2>
+        <ul>
+            <li>Open DevTools → <strong>Lighthouse</strong> tab → Select "Performance" (Mobile) → Generate report.</li>
+            <li>Focus on <strong>Total Blocking Time (TBT)</strong> — target <strong>0–150ms</strong> for good, but after long task elimination you can push TBT below <strong>30ms</strong>.</li>
+            <li>Use <strong>Web Vitals extension</strong> (or PageSpeed Insights) to validate real-user metrics.</li>
+        </ul>
+
+        <div class="comparison-table">
+            <table>
+                <thead><tr><th>Before Fix (heavy loops + sync parse)</th><th>After Fix (chunking + worker)</th></tr></thead>
+                <tbody>
+                    <tr><td>TBT: 450ms ❌</td><td>TBT: 18ms ✅</td></tr>
+                    <tr><td>Long Tasks: 8 tasks > 70ms</td><td>Long Tasks: 0 tasks > 50ms</td></tr>
+                    <tr><td>INP: 220ms (poor)</td><td>INP: 42ms (fast)</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Beyond Basics: User Timing API + Long Tasks API</h2>
+        <p>Proactively monitor long tasks in production via the <strong>PerformanceObserver Long Task API</strong>. Log tasks to RUM and get alerts before users complain.</p>
+        <pre><code>const observer = new PerformanceObserver((list) => {
+  for (const entry of list.getEntries()) {
+    console.warn(`Long Task: ${entry.duration}ms`, entry);
+    // send to analytics
+  }
+});
+observer.observe({ entryTypes: ['longtask'] });</code></pre>
+        <p>Pair this with custom User Timings (<code>performance.mark</code>) to measure exact code segments and correlate with real-world long tasks.</p>
+
+        <div class="callout">
+            <strong>🧠 CHROME DEVTOOLS NINJA TRICK:</strong> In Performance panel, select a Long Task, press "S" key to reveal source code location (source panel ready). For anonymous functions, use "Show function definition". Combine with “Call Tree” filtered by “Chrome extensions” to debug third-party script contamination.
+        </div>
+
+        <h2>Deep Dive: The schedule of Fixes + Automation</h2>
+        <p>For modern codebases, leverage <code>scheduler.yield</code> (experimental but available behind flag) or use libraries like <strong>PQueue</strong> for concurrency control. A robust pattern for React apps: use <code>useDeferredValue</code> or transition to avoid heavy re-renders triggering long tasks. The final test: simulate "6x CPU throttling" + "Fast 3G" and ensure no task exceeds 50ms.</p>
+
+        <div class="affiliate-cta" style="background: linear-gradient(145deg, var(--bg-card), var(--bg-raised)); border-radius: var(--radius-card); padding: 40px; text-align: center; margin: 48px 0;">
+            <h3 style="color:var(--text-1);">Master Performance Like a GDE</h3>
+            <p>Eliminate Long Tasks manually using Chrome DevTools. Now go profile your own app — capture a trace, find the red triangles, rewrite the offenders.</p>
+            <a href="https://developer.chrome.com/docs/devtools/performance/" target="_blank" rel="noopener" style="display: inline-block; background: var(--blue); color: white; text-decoration: none; font-weight: 800; padding: 12px 32px; border-radius: 60px; margin-top: 16px;">
+                <i class="fas fa-chart-simple"></i> Chrome DevTools Docs
+            </a>
+        </div>
+
+        <h3>Final Checklist for 0 Long Tasks</h3>
+        <ul>
+            <li>✔ Profile on real throttled hardware (CPU 4x, network slow 3G).</li>
+            <li>✔ No red-corner triangles visible in performance flame chart.</li>
+            <li>✔ "Bottom-Up" tab shows no single function taking > 50ms self-time.</li>
+            <li>✔ Lighthouse TBT score ≤ 50ms for mobile emulation.</li>
+            <li>✔ Critical tasks offloaded to Web Workers or split via <code>setTimeout</code>.</li>
+        </ul>
+        <p><strong>Final word:</strong> Long Tasks are the silent UX killers. But armed with Chrome DevTools profiling, cooperative scheduling, and background threads, you can deliver buttery-smooth experiences. Every millisecond reclaimed is a user interaction saved. Now go profile that production build. 🚀</p>
+    </article>
+</main>
+
+<div id="footer-content"></div>
+
+<script>
+    // Header එක සම්බන්ධ කිරීම (with error handling)
+    fetch('header.html')
+        .then(response => {
+            if (!response.ok) throw new Error('Header not found');
+            return response.text();
+        })
+        .then(data => {
+            document.getElementById('header-content').innerHTML = data;
+        })
+        .catch(err => console.warn('Could not load header:', err));
+
+    // Footer එක සම්බන්ධ කිරීම (with error handling)
+    fetch('footer.html')
+        .then(response => {
+            if (!response.ok) throw new Error('Footer not found');
+            return response.text();
+        })
+        .then(data => {
+            document.getElementById('footer-content').innerHTML = data;
+        })
+        .catch(err => console.warn('Could not load footer:', err));
+</script>
+
+</body>
+</html>
